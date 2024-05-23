@@ -1,0 +1,44 @@
+---
+title: "Untitled"
+format: html
+---
+
+
+```{python}
+import numpy as np
+import math
+import matplotlib.pyplot as plt
+import scipy.stats as stats
+
+m = 10
+sigma = 2
+n = 10000
+N = 1000
+Y = []
+
+for i in range(N):
+    rozklad = np.random.normal(m, sigma, n)
+    srednia = np.mean(rozklad)
+    y = (srednia - m) / math.sqrt(sigma**2 / n)
+    Y.append(y)
+
+plt.hist(Y, bins=20, density=True, alpha=0.6, color='blue', label='Rozkład Y')
+
+df = n - 1
+x = np.linspace(min(Y) - 1, max(Y) + 1, 1000)
+t_dist = stats.t.pdf(x, df)
+plt.plot(x, t_dist, 'r-', label=f'Rozkład t-Studenta (df={df})')
+
+plt.title('Porównanie rozkładu Y i rozkładu t-Studenta')
+plt.xlabel('Wartość')
+plt.ylabel('Gęstość prawdopodobieństwa')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+alpha = 0.05
+z = stats.t.ppf(1-alpha/2, df)
+yi = [y for y in Y if abs(y) < z]
+P = len(yi)/n
+print(P)
+```
